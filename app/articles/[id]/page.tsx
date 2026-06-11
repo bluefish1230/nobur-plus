@@ -9,9 +9,10 @@ import LikeButton from "./LikeButton";
 
 export const dynamic = "force-dynamic";
 
-export default async function ArticlePage({ params }: { params: { id: string } }) {
+export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
   const supabase = getSupabaseAdmin();
-  const id = Number(params.id);
+  const resolvedParams = await params;
+  const id = Number(resolvedParams.id);
 
   const [{ data: categories }, { data: article }] = await Promise.all([
     supabase.from("categories").select("*").order("created_at", { ascending: true }),

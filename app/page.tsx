@@ -11,11 +11,12 @@ const perPage = 12;
 export default async function Home({
   searchParams
 }: {
-  searchParams: { cat?: string; page?: string };
+  searchParams: Promise<{ cat?: string; page?: string }>;
 }) {
   const supabase = getSupabaseAdmin();
-  const activeCategory = Number(searchParams.cat || 0);
-  const page = Math.max(Number(searchParams.page || 1), 1);
+  const params = await searchParams;
+  const activeCategory = Number(params.cat || 0);
+  const page = Math.max(Number(params.page || 1), 1);
   const from = (page - 1) * perPage;
   const to = from + perPage - 1;
 

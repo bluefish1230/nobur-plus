@@ -8,12 +8,13 @@ import { saveArticle } from "../../../actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function EditArticlePage({ params }: { params: { id: string } }) {
+export default async function EditArticlePage({ params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();
   const supabase = getSupabaseAdmin();
+  const resolvedParams = await params;
   const [{ data: categories }, { data: article }] = await Promise.all([
     supabase.from("categories").select("*").order("created_at", { ascending: true }),
-    supabase.from("articles").select("*").eq("id", Number(params.id)).single()
+    supabase.from("articles").select("*").eq("id", Number(resolvedParams.id)).single()
   ]);
 
   if (!article) notFound();
