@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --theme-primary: #4f46e5;
+  --theme-from: #1e3a8a;
+  --theme-to: #7e22ce;
+}
+
+body[data-theme="itadori"] {
+  --theme-primary: #db2777;
+  --theme-from: #9f1239;
+  --theme-to: #e11d48;
+}
+
+body[data-theme="nobara"] {
+  --theme-primary: #ea580c;
+  --theme-from: #7c2d12;
+  --theme-to: #f97316;
+}
+
+body[data-theme="sukuna"] {
+  --theme-primary: #991b1b;
+  --theme-from: #450a0a;
+  --theme-to: #b91c1c;
+}
+
+body[data-theme="jogo"] {
+  --theme-primary: #ca8a04;
+  --theme-from: #854d0e;
+  --theme-to: #eab308;
+}
+
+body {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.theme-gradient {
+  background: linear-gradient(135deg, var(--theme-from), var(--theme-to));
+}
+
+.text-theme {
+  color: var(--theme-primary);
+}
+
+.bg-theme {
+  background-color: var(--theme-primary);
+}
+
+.border-theme {
+  border-color: var(--theme-primary);
+}
+
+.content-area h1,
+.content-area h2,
+.content-area h3 {
+  color: var(--theme-primary);
+  font-weight: 900;
+  margin: 1.5rem 0 0.75rem;
+}
+
+.content-area p {
+  color: #374151;
+  line-height: 1.85;
+  margin-bottom: 1.1rem;
+}
+
+.content-area img {
+  border-radius: 1rem;
+  margin: 1.5rem auto;
+  max-width: 100%;
+}
+
+.content-area table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+.content-area th,
+.content-area td {
+  border: 1px solid #e5e7eb;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.content-area th {
+  background: #f9fafb;
+  font-weight: 800;
+}

@@ -1,0 +1,20 @@
+.env
+.env.local
+.env.*.local
+.next
+node_modules
+.npm-cache
+package
+npm.tgz
+dist
+*.log
+
+# Legacy PHP deployment files kept locally for reference only.
+*.php
+composer.json
+.user.ini
+.zeaburignore
+install.sql
+cdn_ckeditor.js
+OPERATIONS.md
+assets
