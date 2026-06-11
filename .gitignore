@@ -17,4 +17,4 @@ composer.json
 install.sql
 cdn_ckeditor.js
 OPERATIONS.md
-assets
+/assets
