@@ -47,7 +47,7 @@ export async function saveArticle(formData: FormData) {
     content: String(formData.get("content") || ""),
     image_url: String(formData.get("image_url") || "").trim() || null,
     tags: tagsFromForm(formData),
-    user_id: null
+    user_id: session.id
   };
 
   if (id) {
@@ -89,24 +89,27 @@ export async function createUser(formData: FormData) {
 export async function updateUser(formData: FormData) {
   await requireAdmin();
   const id = Number(formData.get("id"));
+  const username = String(formData.get("username") || "").trim();
   const nickname = String(formData.get("nickname") || "").trim();
   const password = String(formData.get("password") || "");
   if (!id) return;
 
-  const payload: { nickname: string; password_hash?: string } = { nickname };
+  const payload: { username: string; nickname: string; password_hash?: string } = {
+    username,
+    nickname
+  };
   if (password) {
     payload.password_hash = await hashPassword(password);
   }
 
   await getSupabaseAdmin().from("users").update(payload).eq("id", id);
   revalidatePath("/admin/users");
-  redirect("/admin/users");
 }
 
 export async function deleteUser(formData: FormData) {
-  await requireAdmin();
+  const session = await requireAdmin();
   const id = Number(formData.get("id"));
-  if (id && id !== 1) {
+  if (id && id !== session.id) {
     await getSupabaseAdmin().from("users").delete().eq("id", id);
   }
   revalidatePath("/admin/users");

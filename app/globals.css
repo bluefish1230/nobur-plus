@@ -41,6 +41,18 @@ body {
   background: linear-gradient(135deg, var(--theme-from), var(--theme-to));
 }
 
+.theme-action {
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: var(--theme-primary);
+}
+
+.theme-action:hover {
+  border-color: var(--theme-primary);
+  background: var(--theme-primary);
+  color: #ffffff;
+}
+
 .text-theme {
   color: var(--theme-primary);
 }

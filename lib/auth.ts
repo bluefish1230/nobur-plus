@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import bcrypt from "bcryptjs";
+import { getSupabaseAdmin } from "@/lib/supabase";
 
 const COOKIE_NAME = "nobur_admin";
 
@@ -10,6 +11,13 @@ type SessionPayload = {
   username: string;
   nickname: string | null;
   exp: number;
+};
+
+type UserRecord = {
+  id: number;
+  username: string;
+  nickname: string | null;
+  password_hash: string;
 };
 
 function getSecret() {
@@ -88,25 +96,50 @@ export async function requireAdmin() {
   return session;
 }
 
-export async function login(username: string, password: string) {
-  const adminUsername = process.env.ADMIN_USERNAME || "admin";
-  const adminNickname = process.env.ADMIN_NICKNAME || "管理者";
-  const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH;
-  const adminPassword = process.env.ADMIN_PASSWORD;
+async function loginFromDatabase(username: string, password: string) {
+  const supabase = getSupabaseAdmin();
+  const { data: user } = await supabase
+    .from("users")
+    .select("id, username, nickname, password_hash")
+    .eq("username", username)
+    .maybeSingle<UserRecord>();
 
-  const passwordMatches = adminPasswordHash
-    ? await verifyPassword(password, adminPasswordHash)
-    : adminPassword
-      ? password === adminPassword
+  if (!user) return null;
+  if (!(await verifyPassword(password, user.password_hash))) return null;
+
+  return createSessionCookie({
+    id: user.id,
+    username: user.username,
+    nickname: user.nickname
+  });
+}
+
+export async function login(username: string, password: string) {
+  try {
+    const cookie = await loginFromDatabase(username, password);
+    if (cookie) return cookie;
+  } catch {
+    // Fall back to the environment-based rescue login below.
+  }
+
+  const fallbackUsername = process.env.ADMIN_USERNAME || "admin";
+  const fallbackNickname = process.env.ADMIN_NICKNAME || "管理者";
+  const fallbackPasswordHash = process.env.ADMIN_PASSWORD_HASH;
+  const fallbackPassword = process.env.ADMIN_PASSWORD;
+
+  const passwordMatches = fallbackPasswordHash
+    ? await verifyPassword(password, fallbackPasswordHash)
+    : fallbackPassword
+      ? password === fallbackPassword
       : password === "671230";
 
-  if (username !== adminUsername || !passwordMatches) {
+  if (username !== fallbackUsername || !passwordMatches) {
     return null;
   }
 
   return createSessionCookie({
     id: 1,
-    username: adminUsername,
-    nickname: adminNickname
+    username: fallbackUsername,
+    nickname: fallbackNickname
   });
 }

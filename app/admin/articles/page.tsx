@@ -12,7 +12,7 @@ export default async function AdminArticlesPage() {
   await requireAdmin();
   const { data } = await getSupabaseAdmin()
     .from("articles")
-    .select("*, category:categories(id,name)")
+    .select("*, category:categories(id,name), author:users(id,username,nickname)")
     .order("created_at", { ascending: false });
   const articles = (data || []) as Article[];
 
@@ -31,7 +31,7 @@ export default async function AdminArticlesPage() {
               <th className="px-6 py-4">分類</th>
               <th className="px-6 py-4">作者</th>
               <th className="px-6 py-4">標題</th>
-              <th className="px-6 py-4">圖片</th>
+              <th className="px-6 py-4">封面</th>
               <th className="px-6 py-4">時間</th>
               <th className="px-6 py-4">讚數</th>
               <th className="px-6 py-4">操作</th>
@@ -41,9 +41,9 @@ export default async function AdminArticlesPage() {
             {articles.map((article) => (
               <tr key={article.id}>
                 <td className="px-6 py-4">
-                  <span className="rounded bg-indigo-50 px-2 py-1 text-xs font-black text-indigo-600">{article.category?.name}</span>
+                  <span className="rounded bg-indigo-50 px-2 py-1 text-xs font-black text-indigo-600">{article.category?.name || "未分類"}</span>
                 </td>
-                <td className="px-6 py-4 text-sm font-bold text-gray-500">{process.env.ADMIN_NICKNAME || "管理者"}</td>
+                <td className="px-6 py-4 text-sm font-bold text-gray-500">{article.author?.nickname || article.author?.username || "管理者"}</td>
                 <td className="px-6 py-4 font-black text-gray-900">{article.title}</td>
                 <td className="px-6 py-4">
                   {article.image_url ? (
@@ -56,7 +56,9 @@ export default async function AdminArticlesPage() {
                 <td className="px-6 py-4 text-sm font-black text-gray-600">{article.likes_count}</td>
                 <td className="px-6 py-4">
                   <div className="flex gap-3 text-sm">
-                    <Link href={`/admin/articles/${article.id}/edit`} className="font-bold text-indigo-600">編輯</Link>
+                    <Link href={`/admin/articles/${article.id}/edit`} className="font-bold text-indigo-600">
+                      編輯
+                    </Link>
                     <form action={deleteArticle}>
                       <input type="hidden" name="id" value={article.id} />
                       <button className="font-bold text-red-500">刪除</button>

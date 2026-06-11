@@ -14,7 +14,7 @@ export default async function AdminDashboard() {
     supabase.from("articles").select("*", { count: "exact", head: true }),
     supabase
       .from("articles")
-      .select("*, category:categories(id,name)")
+      .select("*, category:categories(id,name), author:users(id,username,nickname)")
       .order("created_at", { ascending: false })
       .limit(5)
   ]);
@@ -43,6 +43,7 @@ export default async function AdminDashboard() {
               <div>
                 <div className="font-black text-gray-900">{article.title}</div>
                 <div className="mt-1 text-xs text-gray-400">{formatDate(article.created_at)}</div>
+                <div className="mt-1 text-xs text-gray-400">{article.author?.nickname || article.author?.username || "管理者"}</div>
               </div>
               <div className="rounded-lg bg-indigo-50 px-2 py-1 text-xs font-black text-indigo-600">
                 {article.category?.name || "未分類"}

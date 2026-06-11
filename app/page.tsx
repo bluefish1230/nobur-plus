@@ -25,7 +25,7 @@ export default async function Home({
     (() => {
       let query = supabase
         .from("articles")
-        .select("*, category:categories(id,name)", { count: "exact" })
+        .select("*, category:categories(id,name), author:users(id,username,nickname)", { count: "exact" })
         .order("created_at", { ascending: false })
         .range(from, to);
 

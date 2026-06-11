@@ -18,7 +18,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
     supabase.from("categories").select("*").order("created_at", { ascending: true }),
     supabase
       .from("articles")
-      .select("*, category:categories(id,name)")
+      .select("*, category:categories(id,name), author:users(id,username,nickname)")
       .eq("id", id)
       .single()
   ]);
@@ -26,7 +26,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
   if (!article) notFound();
 
   const row = article as Article;
-  const author = process.env.ADMIN_NICKNAME || "管理者";
+  const author = row.author?.nickname || row.author?.username || "管理者";
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50 pt-24">

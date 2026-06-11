@@ -52,7 +52,7 @@ export default function ArticleCard({ article }: { article: Article }) {
           <p className="mb-8 line-clamp-3 flex-1 text-sm leading-6 text-gray-500">{excerpt(article.content)}</p>
           <Link
             href={`/articles/${article.id}`}
-            className="inline-flex w-full items-center justify-center rounded-2xl border border-gray-200 bg-gray-50 py-4 text-sm font-black uppercase tracking-widest text-theme transition hover:border-theme hover:bg-theme hover:text-white"
+            className="theme-action inline-flex w-full items-center justify-center rounded-2xl py-4 text-sm font-black uppercase tracking-widest transition"
           >
             閱讀文章
           </Link>

@@ -11,6 +11,7 @@ const themes = [
 ];
 
 function applyTheme(theme: string) {
+  document.documentElement.dataset.theme = theme;
   document.body.dataset.theme = theme;
   localStorage.setItem("nobur-theme", theme);
   const avatar = themes.find((item) => item.id === theme)?.avatar || themes[0].avatar;
